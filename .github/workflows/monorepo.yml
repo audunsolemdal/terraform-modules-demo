@@ -190,7 +190,7 @@ jobs:
           ./terraform-docs markdown table \
             --output-file "$(pwd)"/output/documentation.md \
             --sort-by required \
-            'src/${{ matrix.directory }}'
+            'modules/${{ matrix.directory }}'
 
       - name: Bundle up Terraform module
         working-directory: src/${{ matrix.directory }}

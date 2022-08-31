@@ -1,5 +1,5 @@
 name: Monorepo Versioning
-concurrency:  #avoid concurrent runs on label events, might cause issues on super fast commits  ¯\_(ツ)_/¯
+concurrency: #avoid concurrent runs on label events, might cause issues on super fast commits  ¯\_(ツ)_/¯
   group: ${{ github.head_ref }}
   cancel-in-progress: true
 
@@ -12,7 +12,7 @@ on:
 jobs:
   detect:
     runs-on: ubuntu-latest
-    name: 'Detect pull request context'
+    name: "Detect pull request context"
     outputs:
       directories: ${{ steps.condense.outputs.result }}
       release-type: ${{ steps.check_pr_label.outputs.release-type}}
@@ -21,8 +21,8 @@ jobs:
          && github.event.action == 'closed'
          && github.event.pull_request.merged == true }}
     steps:
-        # I'm getting the labels from the API and not the context("contains(github.event.pull_request.labels.*.name, 'Env Promote')") as the labels
-        # are added in 2nd API call so they aren't included in the PR context
+      # I'm getting the labels from the API and not the context("contains(github.event.pull_request.labels.*.name, 'Env Promote')") as the labels
+      # are added in 2nd API call so they aren't included in the PR context
       - name: Check PR labels
         id: check_pr_label
         env:
@@ -45,12 +45,12 @@ jobs:
         uses: Ana06/get-changed-files@v1.2
         id: raw-files
         with:
-          format: 'json'
+          format: "json"
       - name: Condense to directory list
         uses: actions/github-script@v4
         id: condense
         env:
-          RAW_FILES: '${{ steps.raw-files.outputs.all }}'
+          RAW_FILES: "${{ steps.raw-files.outputs.all }}"
         with:
           script: |
             const raw = JSON.parse(process.env.RAW_FILES);
@@ -71,14 +71,13 @@ jobs:
     strategy:
       matrix: "${{ fromJson(needs.detect.outputs.directories) }}"
       fail-fast: false
-    name: 'Module: ${{ matrix.directory }}'
+    name: "Module: ${{ matrix.directory }}"
     steps:
-
       - name: Detect previous version number
         uses: actions/github-script@v4
         id: prev-version
         env:
-          PACKAGE_NAME: '${{ matrix.directory }}'
+          PACKAGE_NAME: "${{ matrix.directory }}"
         with:
           script: |
             const { owner, repo } = context.repo;
@@ -102,8 +101,8 @@ jobs:
         uses: actions/github-script@v4
         id: new-version
         env:
-          PREV_VERSION: '${{ steps.prev-version.outputs.result }}'
-          RELEASE_TYPE: '${{ needs.detect.outputs.release-type }}'
+          PREV_VERSION: "${{ steps.prev-version.outputs.result }}"
+          RELEASE_TYPE: "${{ needs.detect.outputs.release-type }}"
         with:
           script: |
             const { PREV_VERSION, RELEASE_TYPE } = process.env;
@@ -200,16 +199,15 @@ jobs:
       - name: Upload result artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: '${{ matrix.directory }}'
+          name: "${{ matrix.directory }}"
           path: output
           retention-days: 5
-
 
   comment:
     needs: [detect, plan]
     if: needs.detect.outputs.is-merge-event == 'false'
     runs-on: ubuntu-latest
-    name: 'Comment on PR'
+    name: "Comment on PR"
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -268,12 +266,11 @@ jobs:
               await github.issues.deleteComment({ comment_id: comment.id, owner, repo });
             }
 
-
   trigger-release:
     needs: [detect, plan]
     if: needs.detect.outputs.is-merge-event == 'true'
     runs-on: ubuntu-latest
-    name: 'Dispatch release event'
+    name: "Dispatch release event"
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -300,9 +297,9 @@ jobs:
       - name: Dispatch monorepo_release event
         uses: actions/github-script@v2
         env:
-          RELEASE_LIST: '${{ steps.extract-releases.outputs.result }}'
+          RELEASE_LIST: "${{ steps.extract-releases.outputs.result }}"
         with:
-          github-token: ${{ secrets.GH_PAT_FREIGHTBOT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const payload = {
               run_id: "${{ github.run_id }}",

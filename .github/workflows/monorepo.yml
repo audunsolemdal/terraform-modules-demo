@@ -299,7 +299,7 @@ jobs:
         env:
           RELEASE_LIST: "${{ steps.extract-releases.outputs.result }}"
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT }}
           script: |
             const payload = {
               run_id: "${{ github.run_id }}",

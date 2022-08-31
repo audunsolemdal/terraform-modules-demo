@@ -309,7 +309,7 @@ jobs:
             console.log('Event payload:', JSON.stringify(payload, null, 2));
 
             const { owner, repo } = context.repo;
-            for (const release of releases) {
+            for (const release of JSON.parse(process.env.RELEASE_LIST)) {
               const tagName = `${release.module}/${release.newVersion}`;
 
               const ref = `refs/tags/${tagName}`;

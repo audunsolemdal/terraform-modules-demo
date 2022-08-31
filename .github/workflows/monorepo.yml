@@ -55,9 +55,9 @@ jobs:
           script: |
             const raw = JSON.parse(process.env.RAW_FILES);
             const directories = Array.from(new Set(raw
-              .filter(x => !x.startsWith('.'))
+              .filter(x => x.startsWith('modules'))
               .filter(x => x.includes('/'))
-              .map(x => x.split('/')[0])
+              .map(x => x.split('/')[1])
             ));
             if (directories.length < 1) return {};
             return {
@@ -190,11 +190,11 @@ jobs:
           ./terraform-docs markdown table \
             --output-file "$(pwd)"/output/documentation.md \
             --sort-by required \
-            'src/${{ matrix.directory }}'
+            'src/modules/${{ matrix.directory }}'
 
       - name: Bundle up Terraform module
-        working-directory: src/${{ matrix.directory }}
-        run: zip -vr ../../output/terraform-module.zip *
+        working-directory: src/modules/${{ matrix.directory }}
+        run: zip -vr ../../../output/terraform-module.zip *
 
       - name: Upload result artifacts
         uses: actions/upload-artifact@v2

@@ -22,7 +22,6 @@ variable "cidr" {
   type        = string
   default     = "0.0.0.0/0"
 }
-#
 
 variable "enable_ipv6" {
   description = "Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block."

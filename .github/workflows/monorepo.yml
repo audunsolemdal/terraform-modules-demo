@@ -165,7 +165,7 @@ jobs:
 
           ```hcl
           module "my_${{ matrix.directory }}" {
-            source = "github.com/actions-runner-controller/actions-runner-controller?ref=${{ matrix.directory }}-${{ steps.new-version.outputs.result }}"
+            source = "github.com/miljodir/cp-shared?ref=${{ matrix.directory }}-${{ steps.new-version.outputs.result }}"
 
             # also any inputs for the module (see below)
           }

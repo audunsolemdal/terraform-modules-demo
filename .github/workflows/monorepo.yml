@@ -165,7 +165,7 @@ jobs:
 
           ```hcl
           module "my_${{ matrix.directory }}" {
-            source = "s3::https://forto-terrform-modules-demo.s3.eu-west-1.amazonaws.com/${{ matrix.directory }}-${{ steps.new-version.outputs.result }}.zip"
+            source = "github.com/actions-runner-controller/actions-runner-controller?ref=${{ matrix.directory }}-${{ steps.new-version.outputs.result }}"
 
             # also any inputs for the module (see below)
           }

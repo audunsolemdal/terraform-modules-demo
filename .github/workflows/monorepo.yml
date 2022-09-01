@@ -47,7 +47,7 @@ jobs:
         with:
           format: "json"
       - name: Condense to directory list
-        uses: actions/github-script@v6
+        uses: actions/github-script@v4
         id: condense
         env:
           RAW_FILES: "${{ steps.raw-files.outputs.all }}"
@@ -74,7 +74,7 @@ jobs:
     name: "Module: ${{ matrix.directory }}"
     steps:
       - name: Detect previous version number
-        uses: actions/github-script@v6
+        uses: actions/github-script@v4
         id: prev-version
         env:
           PACKAGE_NAME: "${{ matrix.directory }}"
@@ -89,7 +89,7 @@ jobs:
               }
             }`;
             const result = await github.graphql(query, { owner, repo,
-              refPrefix: `refs/tags/rel/${process.env.PACKAGE_NAME}/`,
+              refPrefix: `refs/tags/${process.env.PACKAGE_NAME}/`,
             });
             const prevNode = result.repository.refs.edges[0];
             const prevVer = prevNode ? prevNode.node.name : '0.0.0';
@@ -98,7 +98,7 @@ jobs:
           result-encoding: string
 
       - name: Determine new version number
-        uses: actions/github-script@v6
+        uses: actions/github-script@v4
         id: new-version
         env:
           PREV_VERSION: "${{ steps.prev-version.outputs.result }}"
@@ -128,7 +128,7 @@ jobs:
           echo '${{ steps.new-version.outputs.result }}' > output/new-version.txt
 
       - name: Extract changelog entry
-        uses: actions/github-script@v6
+        uses: actions/github-script@v5
         with:
           script: |
             const { owner, repo } = context.repo;
@@ -216,7 +216,7 @@ jobs:
         run: ls -R
         working-directory: outputs
 
-      - uses: actions/github-script@v6
+      - uses: actions/github-script@v2
         with:
           script: |
             const { owner, repo } = context.repo;
@@ -278,7 +278,7 @@ jobs:
 
       - name: Combine version information
         id: extract-releases
-        uses: actions/github-script@v6
+        uses: actions/github-script@v2
         with:
           script: |
             const { readdir, readFile } = require('fs').promises;
@@ -295,7 +295,7 @@ jobs:
               })));
 
       - name: Dispatch monorepo_release event
-        uses: actions/github-script@v6
+        uses: actions/github-script@v2
         env:
           RELEASE_LIST: "${{ steps.extract-releases.outputs.result }}"
         with:
